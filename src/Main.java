@@ -14,22 +14,19 @@ public class Main {
     public static void main(String[] args) {
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement createItalianView = conn.prepareStatement(ITALIAN_VIEW);
-             PreparedStatement createGermanView = conn.prepareStatement(GERMAN_VIEW);
-             PreparedStatement selectFromItalianStudents = conn.prepareStatement(SELECT_ITALIAN_STUDENTS);
-             PreparedStatement selectFromGermanStudents = conn.prepareStatement(SELECT_GERMAN_STUDENTS)) {
+             Statement statement = conn.createStatement()) {
 
-            createItalianView.executeUpdate();
-            createGermanView.executeUpdate();
+            statement.executeUpdate(ITALIAN_VIEW);
+            statement.executeUpdate(GERMAN_VIEW);
 
             ArrayList<Student> italianStudents = new ArrayList<>();
-            ResultSet italianResult = selectFromItalianStudents.executeQuery();
+            ResultSet italianResult = statement.executeQuery(SELECT_ITALIAN_STUDENTS);
             while (italianResult.next()) {
                 italianStudents.add(new Student(italianResult.getString("first_name"), italianResult.getString("last_name")));
             }
 
             ArrayList<Student> germanStudents = new ArrayList<>();
-            ResultSet germanResult = selectFromGermanStudents.executeQuery();
+            ResultSet germanResult = statement.executeQuery(SELECT_GERMAN_STUDENTS);
             while (germanResult.next()) {
                 germanStudents.add(new Student(germanResult.getString("first_name"), germanResult.getString("last_name")));
             }
